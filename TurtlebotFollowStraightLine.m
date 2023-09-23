@@ -18,7 +18,14 @@ classdef TurtlebotFollowStraightLine < handle
 
     properties
     QRCodeFound = false; % On startup, this will be false. 
+    
+    ImageSub;
+    VideoPlay;
+    velPub;
+    velMsg;
 
+    QRCodeOrder = ['1. Follow me' '2. Follow me' '3. Follow me']
+    GetOrder = 1;
 
     end
 
@@ -33,7 +40,7 @@ classdef TurtlebotFollowStraightLine < handle
         display("1. Searching for QR Code");
         %While QR not found, 
         while (not(QRCodeFound))
-            ScanForQR(self);
+            self.ScanForQR(self);
             pause(5);
         end
         disp("1. QR Code found.");
@@ -60,21 +67,52 @@ classdef TurtlebotFollowStraightLine < handle
 
     end
 
+    
+    function SetupRos(self)
+        %% SETUP
+        % Connect to ROS master
+        rosshutdown;
+        % turtlebotIp = '172.19.115.28';
+        % rosinit(turtlebotIp);
+
+        % Create ROS subscribers and publishers
+        self.ImageSub = rossubscriber('/camera/rgb/image_raw');
+        receive(self.ImageSub,10); % Wait to receive first message
+        [self.velPub,self.velMsg] = rospublisher('/cmd_vel');
+
+        % Create video player for visualization
+        self.VideoPlay = vision.DeployableVideoPlayer;
+
+        % Load control parameters
+        % params = turtlebotcontrol;
+    end
 
 
 
-    %If the QR code can be found, the change this 'QRCodeFound' to true
+
+     % If the QR code can be found, then change 'QRCodeFound' to true
     function ScanForQR(self)
-        %TODO Store QR location
-        
-    
-    
-    
-        %If QR not found
-        %Rotate45CC(self)
+        % TODO: Store QR location
+        clc;
+        ImageSub = imread("Test3.png");
+        [msg, detectedFormat, loc] = readBarcode(img);
+        disp(msg);
+        disp(detectedFormat);
+        disp(loc);
 
+        currentQRCodeTarget = self.QRCodeOrder(self.GetOrder);
+        if currentQRCodeTarget ~= msg
+            self.Rotate45CC(self)
+            return
+
+        else
+            %move to target by checking straighLine
+        end
         
-                
+
+        % If QR not found, you can add your handling logic here
+        % For example, call the Rotate45CC function
+        % Rotate45CC(self);
     end
     
     
