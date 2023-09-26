@@ -54,16 +54,28 @@ classdef TurtlebotFollowStraightLine < handle
             self.lidar_ = rossubscriber('/scan','DataFormat','struct');
             self.camera_rgb_ = rossubscriber('/camera/rgb/image_raw');
     
-            % Create ROS subscribers and publishers
+
             self.ImageSub = rossubscriber('/camera/rgb/image_raw');
-            receive(self.ImageSub,10); % Wait to receive first message
+            disp('Subscribed to /camera/rgb/image_raw.');
+            
+            try
+                receive(self.ImageSub,10); % Wait to receive first message
+            catch
+                disp('Fail to read ImageSub.');
+            end
             [self.velPub,self.velMsg] = rospublisher('/cmd_vel');
+            disp('Initialized ROS publishers and subscribers.');
 
 
         
             %Initialise ROS
             figure
-            lidar_scan_data = receive(self.lidar_, 1);
+            try
+                lidar_scan_data = receive(self.lidar_, 100);
+            catch
+                disp('Fail to read lidar_.');
+            end
+
             rosPlot(lidar_scan_data,"MaximumRange",10);
         
             disp("1. Searching for QR Code");
@@ -91,8 +103,6 @@ classdef TurtlebotFollowStraightLine < handle
     
             %Do a cross check here to make sure we are in line
             disp("6. Cross check position");
-    
-    
     
         end
     end
@@ -144,35 +154,38 @@ classdef TurtlebotFollowStraightLine < handle
         function Rotate45CC(self)
             disp("2. QR Code not found, turning X amount and trying again");
                
-            % %CK NOTES
-            %     % May need to take readings of the odom to determine the
-            %     % current pose of the turtlebot and do a while loop to check
-            %     % that we are stopping the rotation at the correct time... 
-            % 
-            % % Initialize ROS node in MATLAB
-            % rosinit;
-            % 
-            % % Create a publisher for sending velocity commands
-            % cmd_vel_pub = rospublisher('/cmd_vel', 'geometry_msgs/Twist');
-            % 
-            % % Create a Twist message for the desired velocity command
-            % cmd_msg = rosmessage(cmd_vel_pub);
-            % 
-            % % Set the angular velocity to make the TurtleBot rotate
-            % cmd_msg.Angular.Z = 0.5; % Adjust the value as needed for 45-degree rotation
-            % 
-            % % Publish the command
-            % send(cmd_vel_pub, cmd_msg);
-            % 
-            % % Sleep for a duration to rotate the TurtleBot
-            % pause(10); % Adjust the duration as needed for 45-degree rotation
-            % 
-            % % Stop the TurtleBot by sending a zero velocity command
-            % cmd_msg.Angular.Z = 0;
-            % send(cmd_vel_pub, cmd_msg);
-            % 
-            % % Shutdown the ROS node when done
-            % rosshutdown;
+            %CK NOTES
+                % May need to take readings of the odom to determine the
+                % current pose of the turtlebot and do a while loop to check
+                % that we are stopping the rotation at the correct time... 
+
+            % Initialize ROS node in MATLAB
+            rosinit;
+
+            % Create a publisher for sending velocity commands
+            cmd_vel_pub = rospublisher('/cmd_vel', 'geometry_msgs/Twist');
+
+            % Create a Twist message for the desired velocity command
+            cmd_msg = rosmessage(cmd_vel_pub);
+
+            % Set the angular velocity to make the TurtleBot rotate
+            cmd_msg.Angular.Z = 0.5; % Adjust the value as needed for 45-degree rotation
+
+            % Publish the command
+            send(cmd_vel_pub, cmd_msg);
+
+            % Sleep for a duration to rotate the TurtleBot
+            pause(10); % Adjust the duration as needed for 45-degree rotation
+
+            % Stop the TurtleBot by sending a zero velocity command
+            cmd_msg.Angular.Z = 0;
+            send(cmd_vel_pub, cmd_msg);
+
+            % Shutdown the ROS node when done
+            rosshutdown;
+
+
+            %% Lauren part added
             for i = 1:turning_duration-1
                 self.sendBotVel(0, 0, 0.157, 0);
             end    
