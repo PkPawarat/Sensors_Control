@@ -52,38 +52,46 @@ classdef TurtlebotFollowStraightLine < handle
             self.pub_vel = rospublisher('/cmd_vel','geometry_msgs/Twist');
             self.odom_ = rossubscriber('/odom','DataFormat','struct');
             self.lidar_ = rossubscriber('/scan','DataFormat','struct');
-            self.camera_rgb_ = rossubscriber('/camera/rgb/image_raw');
-    
+            % self.camera_rgb_ = rossubscriber('/camera/rgb/image_raw', 'sensor_msgs/Image');
+            img_sub = rossubscriber("/camera/rgb/image_raw","DataFormat","struct");
+            figure;
 
-            self.ImageSub = rossubscriber('/camera/rgb/image_raw');
-            disp('Subscribed to /camera/rgb/image_raw.');
-            
-            try
-                receive(self.ImageSub,10); % Wait to receive first message
-            catch
-                disp('Fail to read ImageSub.');
+            while 1
+                [msg,status,statustext] = receive(self.camera_rgb_,10)
+                img = readImage(msg);
+                imshow(img);
+                pause(0.1); 
+                % rosPlot(msg2,"MaximumRange",10);
             end
-            [self.velPub,self.velMsg] = rospublisher('/cmd_vel');
-            disp('Initialized ROS publishers and subscribers.');
-
-
-        
-            %Initialise ROS
-            figure
-            try
-                lidar_scan_data = receive(self.lidar_, 100);
-            catch
-                disp('Fail to read lidar_.');
-            end
-
-            rosPlot(lidar_scan_data,"MaximumRange",10);
-        
-            disp("1. Searching for QR Code");
-            %While QR not found, 
-            while (~(self.QRCodeFound))
-                self.ScanForQR(self);
-                pause(5);
-            end
+            % self.ImageSub = rossubscriber('/camera/rgb/image_raw');
+            % disp('Subscribed to /camera/rgb/image_raw.');
+            % 
+            % try
+            %     [msg2,status,statustext] = receive(self.ImageSub,10); % Wait to receive first message
+            % catch
+            %     disp('Fail to read ImageSub.');
+            % end
+            % [self.velPub,self.velMsg] = rospublisher('/cmd_vel');
+            % disp('Initialized ROS publishers and subscribers.');
+            % 
+            % 
+            % 
+            % %Initialise ROS
+            % figure
+            % try
+            %     [msg2,status,statustext] = receive(self.lidar_, 10);
+            % catch
+            %     disp('Fail to read lidar_.');
+            % end
+            % 
+            % rosPlot(msg2,"MaximumRange",10);
+            % 
+            % disp("1. Searching for QR Code");
+            % %While QR not found, 
+            % while (~(self.QRCodeFound))
+            %     self.ScanForQR(self);
+            %     pause(5);
+            % end
             disp("1. QR Code found.");
         
     
@@ -128,8 +136,8 @@ classdef TurtlebotFollowStraightLine < handle
             % end
 
             % for i = 0:45:360
-                rgb_image = receive(self.camera_rgb_,10);
-                [msg, detectedFormat, loc] = readBarcode(rgb_image);
+                [msg2,status,statustext] = receive(self.camera_rgb_,10);
+                [msg, detectedFormat, loc] = readBarcode(msg2);
                 % grey_image = rgb2gray(rgb_image);
                 % Logic for identifying QR code
                 currentQRCodeTarget = self.QRCodeOrder(self.GetOrder);
@@ -197,8 +205,8 @@ classdef TurtlebotFollowStraightLine < handle
         %trying to pass them in and out of functions
         function CalculateNormal(self)
             disp("QR Code not found, turning X amount and trying again");
-            rgb_image = receive(camera_rgb_,10);
-            grey_image = rgb2gray(rgb_image);
+            [msg2,status,statustext] = receive(camera_rgb_,10);
+            grey_image = rgb2gray(msg2);
             % find the normal logic   
         end
 
