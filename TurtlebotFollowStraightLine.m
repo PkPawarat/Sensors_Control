@@ -33,7 +33,8 @@ classdef TurtlebotFollowStraightLine < handle
 
     QRCodeOrder = ['1. Follow me' '2. Follow me' '3. Follow me']
     GetOrder = 1;
-
+    
+    ipAddress = '127.0.0.1';
     end
 
     methods
@@ -48,23 +49,35 @@ classdef TurtlebotFollowStraightLine < handle
             % Connect to ROS master
             rosshutdown;
 
-            % rosinit(turtlebotIp);
-            rosinit;
-
+            % rosinit(self.ipAddress);
+            rosinit('http://localhost:11311');
+            % rosinit;
             self.pub_vel = rospublisher('/cmd_vel','geometry_msgs/Twist');
             self.odom_ = rossubscriber('/odom','DataFormat','struct');
             self.lidar_ = rossubscriber('/scan','DataFormat','struct');
-            % self.camera_rgb_ = rossubscriber('/camera/rgb/image_raw', 'sensor_msgs/Image');
-            img_sub = rossubscriber("/camera/rgb/image_raw","DataFormat","struct");
-            figure;
+            self.camera_rgb_ = rossubscriber('/camera/rgb/image_raw', 'sensor_msgs/Image');
+            % img_sub = rossubscriber("/camera/rgb/image_raw","DataFormat","struct");
+            % figure;
 
-            while 1
-                [msg,status,statustext] = receive(self.camera_rgb_,10)
-                img = readImage(msg);
-                imshow(img);
-                pause(0.1); 
-                % rosPlot(msg2,"MaximumRange",10);
-            end
+            % while 1
+            %     [msg,status,statustext] = receive(self.camera_rgb_,10)
+            %     img = readImage(msg);
+            %     imshow(img);
+            %     pause(0.1); 
+            %     % rosPlot(msg2,"MaximumRange",10);
+            % end
+            %%
+            disp('IM STARTING TO GET MESSAGE, GOD DAMN COME DOWN');
+            msg = receive(self.camera_rgb_, 10); % Receive image message
+            % i = msg.Data;
+            % imwrite(readImage(msg), "testimage.png");
+            figure(1);
+            imshow(readImage(msg)); % Display the image
+            disp('DONE');
+            % Add a pause to control the refresh rate (e.g., pause(0.1) for 10 Hz)
+            pause(10);
+            %%
+
             % self.ImageSub = rossubscriber('/camera/rgb/image_raw');
             % disp('Subscribed to /camera/rgb/image_raw.');
             % 
@@ -99,7 +112,7 @@ classdef TurtlebotFollowStraightLine < handle
     
     
             disp("3. Calculating normal line from QR code");
-            CalculateNormal(self);
+            % CalculateNormal(self);
     
     
             disp("4. Turning robot towards normal line");
