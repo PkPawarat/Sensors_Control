@@ -12,6 +12,8 @@
 % 6. Recalculate (3) and check error. If within +- X, continue
 % 7. Drive towards QR code until within X distance
 
+%For complex trajectory, recommend arc steering
+%4. 
 
 
 classdef TurtlebotFollowStraightLine < handle
@@ -167,37 +169,84 @@ classdef TurtlebotFollowStraightLine < handle
                 % current pose of the turtlebot and do a while loop to check
                 % that we are stopping the rotation at the correct time... 
 
+            % % Initialize ROS node in MATLAB
+            % rosinit;
+            % 
+            % % Create a publisher for sending velocity commands
+            % cmd_vel_pub = rospublisher('/cmd_vel', 'geometry_msgs/Twist');
+            % 
+            % % Create a Twist message for the desired velocity command
+            % cmd_msg = rosmessage(cmd_vel_pub);
+            % 
+            % % Set the angular velocity to make the TurtleBot rotate
+            % cmd_msg.Angular.Z = 0.5; % Adjust the value as needed for 45-degree rotation
+            % 
+            % % Publish the command
+            % send(cmd_vel_pub, cmd_msg);
+            % 
+            % % Sleep for a duration to rotate the TurtleBot
+            % pause(10); % Adjust the duration as needed for 45-degree rotation
+            % 
+            % % Stop the TurtleBot by sending a zero velocity command
+            % cmd_msg.Angular.Z = 0;
+            % send(cmd_vel_pub, cmd_msg);
+            % 
+            % % Shutdown the ROS node when done
+            % rosshutdown;
+            % 
+            % 
+            % %% Lauren part added
+            % for i = 1:turning_duration-1
+            %     self.sendBotVel(0, 0, 0.157, 0);
+            % end    
+            % self.sendBotVel(0, 0, 0, 0);
+
+            %% New script
             % Initialize ROS node in MATLAB
             rosinit;
-
+        
             % Create a publisher for sending velocity commands
             cmd_vel_pub = rospublisher('/cmd_vel', 'geometry_msgs/Twist');
-
+        
+            % Create a subscriber for the robot's current pose (for orientation feedback)
+            pose_sub = rossubscriber('/odom', 'nav_msgs/Odometry');
+        
             % Create a Twist message for the desired velocity command
             cmd_msg = rosmessage(cmd_vel_pub);
-
+        
             % Set the angular velocity to make the TurtleBot rotate
-            cmd_msg.Angular.Z = 0.5; % Adjust the value as needed for 45-degree rotation
-
-            % Publish the command
+            cmd_msg.Angular.Z = 0.5; % Adjust the value as needed
+        
+            % Initialize the initial orientation
+            initialOrientation = 0;
+        
+            % Publish the command to start the rotation
             send(cmd_vel_pub, cmd_msg);
-
-            % Sleep for a duration to rotate the TurtleBot
-            pause(10); % Adjust the duration as needed for 45-degree rotation
-
+        
+            % Rotate until the desired angle is reached
+            targetAngle = deg2rad(45); % Convert 45 degrees to radians
+            angleTolerance = deg2rad(2); % Adjust the tolerance as needed
+            while abs(initialOrientation - targetAngle) > angleTolerance
+                % Get the current orientation from the pose subscriber
+                pose = receive(pose_sub);
+                currentOrientation = quat2eul([pose.Pose.Pose.Orientation.W, ...
+                    pose.Pose.Pose.Orientation.X, pose.Pose.Pose.Orientation.Y, ...
+                    pose.Pose.Pose.Orientation.Z]);
+                currentOrientation = currentOrientation(1); % Extract the yaw angle
+        
+                % Update the initial orientation
+                initialOrientation = currentOrientation;
+        
+                % Pause briefly to control the loop rate
+                pause(0.1);
+            end
+        
             % Stop the TurtleBot by sending a zero velocity command
             cmd_msg.Angular.Z = 0;
             send(cmd_vel_pub, cmd_msg);
-
+        
             % Shutdown the ROS node when done
             rosshutdown;
-
-
-            %% Lauren part added
-            for i = 1:turning_duration-1
-                self.sendBotVel(0, 0, 0.157, 0);
-            end    
-            self.sendBotVel(0, 0, 0, 0);
         end
     
     
