@@ -63,9 +63,9 @@ classdef TurtlebotFollowStraightLine < handle
             self.camera_rgb_ = rossubscriber('/camera/rgb/image_raw', 'sensor_msgs/Image');
             
             for i = 1:size(self.QRCodeOrder)
-                // msg = receive(camera_rgb_,10);
-                // self.ImageSub = readImage(msg);
-                // imshow(self.ImageSub);
+                % msg = receive(camera_rgb_,10);
+                % self.ImageSub = readImage(msg);
+                % imshow(self.ImageSub);
 
                 self.ScanForQR(self);
                 self.CalculateNormal(self);
