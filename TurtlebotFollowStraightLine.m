@@ -24,6 +24,9 @@ classdef TurtlebotFollowStraightLine < handle
     odom_;% = rossubscriber('/odom','DataFormat','struct');
     lidar_;% = rossubscriber('/scan','DataFormat','struct');
     camera_rgb_;% = rossubscriber('/camera/rgb/image_raw');
+
+    camera-image;
+
     turn_duration = 5; % Turning duration in seconds
 
     ImageSub;
@@ -31,8 +34,11 @@ classdef TurtlebotFollowStraightLine < handle
     velPub;
     velMsg;
 
-    QRCodeOrder = ['1. Follow me' '2. Follow me' '3. Follow me']
+    QRCodeOrder = ['1. Follow me' '2. Follow me' '3. Follow me', 'Finished']
+
     GetOrder = 1;
+
+    ipAddress = '127.0.0.1'%'192.168.0.101'
 
     end
 
@@ -48,50 +54,28 @@ classdef TurtlebotFollowStraightLine < handle
             % Connect to ROS master
             rosshutdown;
 
-            % rosinit(turtlebotIp);
-            rosinit;
+            rosinit(self.ipAddress);
+            % rosinit;
 
             self.pub_vel = rospublisher('/cmd_vel','geometry_msgs/Twist');
             self.odom_ = rossubscriber('/odom','DataFormat','struct');
             self.lidar_ = rossubscriber('/scan','DataFormat','struct');
-            % self.camera_rgb_ = rossubscriber('/camera/rgb/image_raw', 'sensor_msgs/Image');
-            img_sub = rossubscriber("/camera/rgb/image_raw","DataFormat","struct");
-            figure;
+            self.camera_rgb_ = rossubscriber('/camera/rgb/image_raw', 'sensor_msgs/Image');
+            
+            for i = 1:size(self.QRCodeOrder)
+                % msg = receive(camera_rgb_,10);
+                % self.ImageSub = readImage(msg);
+                % imshow(self.ImageSub);
 
-            while 1
-                [msg,status,statustext] = receive(self.camera_rgb_,10)
-                img = readImage(msg);
-                imshow(img);
-                pause(0.1); 
-                % rosPlot(msg2,"MaximumRange",10);
+                self.ScanForQR(self);
+                self.CalculateNormal(self);
+
             end
-            % self.ImageSub = rossubscriber('/camera/rgb/image_raw');
-            % disp('Subscribed to /camera/rgb/image_raw.');
-            % 
-            % try
-            %     [msg2,status,statustext] = receive(self.ImageSub,10); % Wait to receive first message
-            % catch
-            %     disp('Fail to read ImageSub.');
-            % end
-            % [self.velPub,self.velMsg] = rospublisher('/cmd_vel');
-            % disp('Initialized ROS publishers and subscribers.');
-            % 
-            % 
-            % 
-            % %Initialise ROS
-            % figure
-            % try
-            %     [msg2,status,statustext] = receive(self.lidar_, 10);
-            % catch
-            %     disp('Fail to read lidar_.');
-            % end
-            % 
-            % rosPlot(msg2,"MaximumRange",10);
-            % 
+            
             % disp("1. Searching for QR Code");
             % %While QR not found, 
             % while (~(self.QRCodeFound))
-            %     self.ScanForQR(self);
+            %     self.QRCodeFound = self.ScanForQR(self);
             %     pause(5);
             % end
             disp("1. QR Code found.");
@@ -99,7 +83,7 @@ classdef TurtlebotFollowStraightLine < handle
     
     
             disp("3. Calculating normal line from QR code");
-            CalculateNormal(self);
+            %CalculateNormal(self);
     
     
             disp("4. Turning robot towards normal line");
@@ -121,26 +105,12 @@ classdef TurtlebotFollowStraightLine < handle
 
          % If the QR code can be found, then change 'QRCodeFound' to true
         function ScanForQR(self)
-            % TODO: Store QR location
-            % ImageSub = imread("Test3.png");
-            % [msg, detectedFormat, loc] = readBarcode(img);
-            % % disp(msg);
-            % % disp(detectedFormat);
-            % % disp(loc);
-            % 
-            % currentQRCodeTarget = self.QRCodeOrder(self.GetOrder);
-            % if currentQRCodeTarget ~= msg
-            %     self.Rotate45CC(self)
-            %     return
-            % 
-            % else
-            %     %move to target by checking straighLine
-            % end
-
-            % for i = 0:45:360
-                [msg2,status,statustext] = receive(self.camera_rgb_,10);
-                [msg, detectedFormat, loc] = readBarcode(msg2);
+            while 1
+                msg = receive(self.camera_rgb_,10);
+                self.ImageSub = readImage(msg);
+                [msg, detectedFormat, loc] = readBarcode(self.ImageSub);
                 % grey_image = rgb2gray(rgb_image);
+
                 % Logic for identifying QR code
                 currentQRCodeTarget = self.QRCodeOrder(self.GetOrder);
                 if currentQRCodeTarget == msg
@@ -149,16 +119,9 @@ classdef TurtlebotFollowStraightLine < handle
                 end
                 %If QR not found
                 self.Rotate45CC(self);
-                pause(5);
-            % end     
-            
-    
-            % If QR not found, you can add your handling logic here
-            % For example, call the Rotate45CC function
-            % Rotate45CC(self);
+                pause(0.1);
+            end
         end
-        
-        
         
         %Rotate the robot 45 degrees counter-clockwise. 
         function Rotate45CC(self)
@@ -208,7 +171,7 @@ classdef TurtlebotFollowStraightLine < handle
             % Create a publisher for sending velocity commands
             cmd_vel_pub = rospublisher('/cmd_vel', 'geometry_msgs/Twist');
         
-            % Create a subscriber for the robot's current pose (for orientation feedback)
+            // % Create a subscriber for the robot's current pose (for orientation feedback)
             pose_sub = rossubscriber('/odom', 'nav_msgs/Odometry');
         
             % Create a Twist message for the desired velocity command
@@ -248,7 +211,11 @@ classdef TurtlebotFollowStraightLine < handle
             % Shutdown the ROS node when done
             rosshutdown;
         end
-    
+
+        function DriveTo(self)
+            disp("Just drive baby ~~");
+            
+        end
     
         %Store all necessary values as properties within the class rather than
         %trying to pass them in and out of functions
