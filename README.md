@@ -3,7 +3,7 @@ Subject 41014 Sensors and Control for Mechatronics Systems
 
 
 ## Matlab
-
+ a
     matlab
 
 
@@ -32,3 +32,10 @@ First, check the location of the RPlidar serial port, use the command
 
     roslaunch rplidar_ros view_rplidar.launch
 
+## check IP Address
+    
+    ifconfig
+
+    export ROS_MASTER_URI=http://172.19.114.96:11311
+    
+    export ROS_HOSTNAME=172.19.114.96
