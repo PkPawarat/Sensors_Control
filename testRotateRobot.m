@@ -1,8 +1,9 @@
 %% 
 disp("Test robot angle starting");
-RotateRobot(45); 
+RotateRobot(5); 
 
 disp("Test robot angle complete");
+
 %pause(5); 
 %disp("Test robot reverse angle starting");
 
@@ -11,17 +12,19 @@ disp("Test robot angle complete");
 %disp("Test robot reverse angle complete");
 
 %% Drive robot
+clc;
+
 DriveRobot(0);
 disp("Test robot drive starting");
-DriveRobot(1); 
+DriveRobot(0.5); 
 
-disp("Test robot angle complete");
-pause(5); 
-disp("Test robot reverse angle starting");
+disp("Test robot drive complete");
+%pause(5); 
+%disp("Test robot reverse starting");
 
-DriveRobot(-1);
+%DriveRobot(-0.5);
 
-disp("Test robot reverse angle complete");
+%disp("Test robot reverse complete");
 
 
 %% Stop robot
