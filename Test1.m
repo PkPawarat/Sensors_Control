@@ -86,3 +86,5 @@ img = imread('QR Code/FollowMe1.jpg');
 hold on;
 imshow(img);
 disp(msg);
+
+%test git branch
