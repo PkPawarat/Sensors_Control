@@ -171,7 +171,7 @@ classdef TurtlebotFollowStraightLine < handle
             % Create a publisher for sending velocity commands
             cmd_vel_pub = rospublisher('/cmd_vel', 'geometry_msgs/Twist');
         
-            // % Create a subscriber for the robot's current pose (for orientation feedback)
+            % Create a subscriber for the robot's current pose (for orientation feedback)
             pose_sub = rossubscriber('/odom', 'nav_msgs/Odometry');
         
             % Create a Twist message for the desired velocity command
