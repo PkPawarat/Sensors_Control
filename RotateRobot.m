@@ -56,9 +56,13 @@ function RotateRobot(rotateAngle)
         
         % Calculate the updated angle difference
         diff = abs(targetAngle - CurrentRotation);
+        if diff > pi * 2
+            diff = diff - pi * 2
+        end
+        disp(diff);
         
         % Pause briefly to control the loop rate
-        pause(0.05);
+        pause(0.02);
     end
     
     % Stop the TurtleBot by sending a zero angular velocity command
