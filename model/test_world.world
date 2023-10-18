@@ -102,7 +102,317 @@
       <elevation>0</elevation>
       <heading_deg>0</heading_deg>
     </spherical_coordinates>
-    <model name='turtlebot3_waffle'>
+    <model name='QR_POLE_1'>
+      <static>1</static>
+      <link name='pod_link'>
+        <inertial>
+          <pose>0 0 1.2045 0 -0 0</pose>
+          <mass>76.26</mass>
+          <inertia>
+            <ixx>47</ixx>
+            <ixy>-0.003456</ixy>
+            <ixz>0.001474</ixz>
+            <izz>13.075</izz>
+            <iyz>-0.014439</iyz>
+            <iyy>47</iyy>
+          </inertia>
+        </inertial>
+        <visual name='pod_visual'>
+          <pose>0 0 0 1.5707 -0 0</pose>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Grey</name>
+            </script>
+          </material>
+          <geometry>
+            <mesh>
+              <uri>model://QR_POLE_1/mesh/QR_POLE_1.stl</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='pod_collision'>
+          <pose>0 0 0 1.5707 -0 0</pose>
+          <geometry>
+            <mesh>
+              <uri>model://QR_POLE_1/mesh/QR_POLE_1.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>0.8</mu>
+                <mu2>0.8</mu2>
+                <fdir1>0 0 0</fdir1>
+                <slip1>1</slip1>
+                <slip2>1</slip2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <static>1</static>
+      <pose>0.003175 1.52549 0 0 -0 0</pose>
+    </model>
+    <model name='QR_POLE_1_clone'>
+      <static>1</static>
+      <link name='pod_link'>
+        <inertial>
+          <pose>0 0 1.2045 0 -0 0</pose>
+          <mass>76.26</mass>
+          <inertia>
+            <ixx>47</ixx>
+            <ixy>-0.003456</ixy>
+            <ixz>0.001474</ixz>
+            <izz>13.075</izz>
+            <iyz>-0.014439</iyz>
+            <iyy>47</iyy>
+          </inertia>
+        </inertial>
+        <visual name='pod_visual'>
+          <pose>0 0 0 1.5707 -0 0</pose>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Grey</name>
+            </script>
+          </material>
+          <geometry>
+            <mesh>
+              <uri>model://QR_POLE_1/mesh/QR_POLE_1.stl</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='pod_collision'>
+          <pose>0 0 0 1.5707 -0 0</pose>
+          <geometry>
+            <mesh>
+              <uri>model://QR_POLE_1/mesh/QR_POLE_1.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>0.8</mu>
+                <mu2>0.8</mu2>
+                <fdir1>0 0 0</fdir1>
+                <slip1>1</slip1>
+                <slip2>1</slip2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <static>1</static>
+      <pose>1.99429 0.01237 0.003508 -1.56535 -0 0</pose>
+    </model>
+    <model name='QR_POLE_1_clone_0'>
+      <static>1</static>
+      <link name='pod_link'>
+        <inertial>
+          <pose>0 0 1.2045 0 -0 0</pose>
+          <mass>76.26</mass>
+          <inertia>
+            <ixx>47</ixx>
+            <ixy>-0.003456</ixy>
+            <ixz>0.001474</ixz>
+            <izz>13.075</izz>
+            <iyz>-0.014439</iyz>
+            <iyy>47</iyy>
+          </inertia>
+        </inertial>
+        <visual name='pod_visual'>
+          <pose>0 0 0 1.5707 -0 0</pose>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Grey</name>
+            </script>
+          </material>
+          <geometry>
+            <mesh>
+              <uri>model://QR_POLE_1/mesh/QR_POLE_1.stl</uri>
+            </mesh>
+          </geometry>
+        </visual>
+        <collision name='pod_collision'>
+          <pose>0 0 0 1.5707 -0 0</pose>
+          <geometry>
+            <mesh>
+              <uri>model://QR_POLE_1/mesh/QR_POLE_1.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>0.8</mu>
+                <mu2>0.8</mu2>
+                <fdir1>0 0 0</fdir1>
+                <slip1>1</slip1>
+                <slip2>1</slip2>
+              </ode>
+              <torsional>
+                <ode/>
+              </torsional>
+            </friction>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+          </surface>
+          <max_contacts>10</max_contacts>
+        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <static>1</static>
+      <pose>-0.00133 -2.04041 0.003508 -1.56535 -0 0</pose>
+    </model>
+    <state world_name='default'>
+      <sim_time>1506 30000000</sim_time>
+      <real_time>126 224147903</real_time>
+      <wall_time>1697624502 920672867</wall_time>
+      <iterations>125903</iterations>
+      <model name='QR1_0'>
+        <pose>0.380775 1.01448 0.346401 1.57553 0.004223 -0.373838</pose>
+        <scale>0.125968 0.116306 1</scale>
+        <link name='link'>
+          <pose>0.380775 1.01448 0.346401 1.57553 0.004223 -0.373838</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='QR2'>
+        <pose>1.00732 0.000781 0.352203 0 -1.5659 0</pose>
+        <scale>0.111915 0.118877 1</scale>
+        <link name='link'>
+          <pose>1.00732 0.000781 0.352203 0 -1.5659 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='QR3'>
+        <pose>0.703219 -0.91223 0.335239 7e-06 -1.56663 -0.907589</pose>
+        <scale>0.126701 0.144389 1</scale>
+        <link name='link'>
+          <pose>0.703219 -0.91223 0.335239 7e-06 -1.56663 -0.907589</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='QR_POLE_1'>
+        <pose>0.405844 1.07095 0.00364 -1.56572 0.001977 -0.371426</pose>
+        <scale>1 1 1</scale>
+        <link name='pod_link'>
+          <pose>0.405844 1.07095 0.00364 -1.56572 0.001977 -0.371426</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='QR_POLE_1_clone'>
+        <pose>1.06643 0.005155 0.003465 -1.57075 0.005446 -1.56302</pose>
+        <scale>1 1 1</scale>
+        <link name='pod_link'>
+          <pose>1.06643 0.005155 0.003465 -1.57075 0.005446 -1.56302</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='QR_POLE_1_clone_0'>
+        <pose>0.732946 -0.953633 0.000581 -1.57506 0.003392 -2.46886</pose>
+        <scale>1 1 1</scale>
+        <link name='pod_link'>
+          <pose>0.732946 -0.953633 0.000581 -1.57506 0.003392 -2.46886</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='ground_plane'>
+        <pose>0 0 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose>0 0 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='line'>
+        <pose>0.536367 0.107582 0.013257 0 -0 0</pose>
+        <scale>1.54139 2.25192 1</scale>
+        <link name='link'>
+          <pose>0.536367 0.107582 0.013257 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='turtlebot3_waffle_pi'>
+        <pose>0.033395 0.044172 -0.001008 -3e-06 0.003185 1.71758</pose>
+        <scale>1 1 1</scale>
+        <link name='base_footprint'>
+          <pose>0.033395 0.044172 -0.001008 -3e-06 0.003185 1.71758</pose>
+          <velocity>-1e-06 -0 1.6e-05 7.5e-05 -2.7e-05 4e-06</velocity>
+          <acceleration>0 -0 0 0 -0 0</acceleration>
+          <wrench>0 -0 0 0 -0 0</wrench>
+        </link>
+        <link name='wheel_left_link'>
+          <pose>-0.109072 0.023215 0.031992 1.55016 1.53234 -1.44463</pose>
+          <velocity>-2e-06 -4e-06 1e-06 5.9e-05 -5.3e-05 5e-06</velocity>
+          <acceleration>-0 -0 0 0 -0 0</acceleration>
+          <wrench>-0 -0 0 0 -0 0</wrench>
+        </link>
+        <link name='wheel_right_link'>
+          <pose>0.175831 0.065337 0.031992 -1.54213 -1.54312 1.68892</pose>
+          <velocity>-1e-06 -2e-06 1.7e-05 6.8e-05 -3.3e-05 4e-06</velocity>
+          <acceleration>-0 -0 0 0 -0 0</acceleration>
+          <wrench>-0 -0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <light name='sun'>
+        <pose>0 0 10 0 -0 0</pose>
+      </light>
+      <light name='user_point_light_0'>
+        <pose>0.029852 -0.013966 1 0 -0 0</pose>
+      </light>
+    </state>
+    <gui fullscreen='0'>
+      <camera name='user_camera'>
+        <pose>-3.07123 0.77671 5.28167 0 1.0538 -0.002738</pose>
+        <view_controller>orbit</view_controller>
+        <projection_type>perspective</projection_type>
+      </camera>
+    </gui>
+    <model name='turtlebot3_waffle_pi'>
       <link name='base_footprint'>
         <inertial>
           <pose>-0.006056 0 0.019264 0 -0 0</pose>
@@ -138,10 +448,10 @@
           <max_contacts>10</max_contacts>
         </collision>
         <collision name='base_footprint_fixed_joint_lump__camera_link_collision_1'>
-          <pose>0.067 0 0.111 0 -0 0</pose>
+          <pose>0.078 0 0.107 0 -0 0</pose>
           <geometry>
             <box>
-              <size>0.012 0.132 0.02</size>
+              <size>0.015 0.03 0.027</size>
             </box>
           </geometry>
           <max_contacts>10</max_contacts>
@@ -243,7 +553,7 @@
           <geometry>
             <mesh>
               <scale>0.001 0.001 0.001</scale>
-              <uri>/home/pawarat/catkin_ws/src/turtlebot3/turtlebot3_description/meshes/bases/waffle_base.stl</uri>
+              <uri>/home/pawarat/catkin_ws/src/turtlebot3/turtlebot3_description/meshes/bases/waffle_pi_base.stl</uri>
             </mesh>
           </geometry>
           <material>
@@ -253,16 +563,7 @@
             </script>
           </material>
         </visual>
-        <visual name='base_footprint_fixed_joint_lump__camera_link_visual_1'>
-          <pose>0.064 -0.065 0.104 1.57 -0 1.57</pose>
-          <geometry>
-            <mesh>
-              <scale>1 1 1</scale>
-              <uri>/home/pawarat/catkin_ws/src/turtlebot3/turtlebot3_description/meshes/sensors/r200.dae</uri>
-            </mesh>
-          </geometry>
-        </visual>
-        <visual name='base_footprint_fixed_joint_lump__base_scan_visual_2'>
+        <visual name='base_footprint_fixed_joint_lump__base_scan_visual_1'>
           <pose>-0.064 0 0.132 0 -0 0</pose>
           <geometry>
             <mesh>
@@ -277,50 +578,37 @@
             </script>
           </material>
         </visual>
-        <sensor name='realsense_R200' type='depth'>
+        <sensor name='Pi Camera' type='camera'>
           <always_on>1</always_on>
           <visualize>0</visualize>
           <camera>
-            <horizontal_fov>1.3439</horizontal_fov>
+            <horizontal_fov>1.0856</horizontal_fov>
             <image>
-              <width>1920</width>
-              <height>1080</height>
+              <width>640</width>
+              <height>480</height>
               <format>R8G8B8</format>
             </image>
-            <depth_camera>
-              <output>depths</output>
-            </depth_camera>
             <clip>
               <near>0.03</near>
               <far>100</far>
             </clip>
           </camera>
-          <plugin name='camera_controller' filename='libgazebo_ros_openni_kinect.so'>
-            <baseline>0.2</baseline>
+          <plugin name='camera_controller' filename='libgazebo_ros_camera.so'>
             <alwaysOn>1</alwaysOn>
             <updateRate>30.0</updateRate>
             <cameraName>camera</cameraName>
             <frameName>camera_rgb_optical_frame</frameName>
             <imageTopicName>rgb/image_raw</imageTopicName>
-            <depthImageTopicName>depth/image_raw</depthImageTopicName>
-            <pointCloudTopicName>depth/points</pointCloudTopicName>
             <cameraInfoTopicName>rgb/camera_info</cameraInfoTopicName>
-            <depthImageCameraInfoTopicName>depth/camera_info</depthImageCameraInfoTopicName>
-            <pointCloudCutoff>0.4</pointCloudCutoff>
             <hackBaseline>0.07</hackBaseline>
             <distortionK1>0.0</distortionK1>
             <distortionK2>0.0</distortionK2>
             <distortionK3>0.0</distortionK3>
             <distortionT1>0.0</distortionT1>
             <distortionT2>0.0</distortionT2>
-            <CxPrime>0.0</CxPrime>
-            <Cx>0.0</Cx>
-            <Cy>0.0</Cy>
-            <focalLength>0</focalLength>
-            <hackBaseline>0</hackBaseline>
             <robotNamespace>/</robotNamespace>
           </plugin>
-          <pose>0.069 -0.047 0.117 0 -0 0</pose>
+          <pose>0.076 0 0.103 0 -0 0</pose>
         </sensor>
         <sensor name='imu' type='imu'>
           <always_on>1</always_on>
@@ -527,7 +815,7 @@
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
       </link>
-      <plugin name='turtlebot3_waffle_controller' filename='libgazebo_ros_diff_drive.so'>
+      <plugin name='turtlebot3_waffle_pi_controller' filename='libgazebo_ros_diff_drive.so'>
         <commandTopic>cmd_vel</commandTopic>
         <odometryTopic>odom</odometryTopic>
         <odometryFrame>odom</odometryFrame>
@@ -581,387 +869,115 @@
       </plugin>
       <pose>0 0 0 0 -0 0</pose>
     </model>
-    <model name='QR_POLE_1'>
+    <light name='user_point_light_0' type='point'>
+      <pose>0.029852 -0.013966 1 0 -0 0</pose>
+      <diffuse>0.5 0.5 0.5 1</diffuse>
+      <specular>0.1 0.1 0.1 1</specular>
+      <attenuation>
+        <range>20</range>
+        <constant>0.5</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <cast_shadows>0</cast_shadows>
+      <direction>0 0 -1</direction>
+      <spot>
+        <inner_angle>0</inner_angle>
+        <outer_angle>0</outer_angle>
+        <falloff>0</falloff>
+      </spot>
+    </light>
+    <model name='QR1_0'>
       <static>1</static>
-      <link name='pod_link'>
-        <inertial>
-          <pose>0 0 1.2045 0 -0 0</pose>
-          <mass>76.26</mass>
-          <inertia>
-            <ixx>47</ixx>
-            <ixy>-0.003456</ixy>
-            <ixz>0.001474</ixz>
-            <izz>13.075</izz>
-            <iyz>-0.014439</iyz>
-            <iyy>47</iyy>
-          </inertia>
-        </inertial>
-        <visual name='pod_visual'>
-          <pose>0 0 0 1.5707 -0 0</pose>
-          <material>
-            <script>
-              <uri>file://media/materials/scripts/gazebo.material</uri>
-              <name>Gazebo/Grey</name>
-            </script>
-          </material>
-          <geometry>
-            <mesh>
-              <uri>model://QR_POLE_1/mesh/QR_POLE_1.stl</uri>
-            </mesh>
-          </geometry>
-        </visual>
-        <collision name='pod_collision'>
-          <pose>0 0 0 1.5707 -0 0</pose>
-          <geometry>
-            <mesh>
-              <uri>model://QR_POLE_1/mesh/QR_POLE_1.stl</uri>
-            </mesh>
-          </geometry>
-          <surface>
-            <friction>
-              <ode>
-                <mu>0.8</mu>
-                <mu2>0.8</mu2>
-                <fdir1>0 0 0</fdir1>
-                <slip1>1</slip1>
-                <slip2>1</slip2>
-              </ode>
-              <torsional>
-                <ode/>
-              </torsional>
-            </friction>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-          </surface>
-          <max_contacts>10</max_contacts>
-        </collision>
-        <self_collide>0</self_collide>
-        <enable_wind>0</enable_wind>
-        <kinematic>0</kinematic>
-      </link>
-      <static>1</static>
-      <pose>0.003175 1.52549 0 0 -0 0</pose>
-    </model>
-    <model name='QR_POLE_1_clone'>
-      <static>1</static>
-      <link name='pod_link'>
-        <inertial>
-          <pose>0 0 1.2045 0 -0 0</pose>
-          <mass>76.26</mass>
-          <inertia>
-            <ixx>47</ixx>
-            <ixy>-0.003456</ixy>
-            <ixz>0.001474</ixz>
-            <izz>13.075</izz>
-            <iyz>-0.014439</iyz>
-            <iyy>47</iyy>
-          </inertia>
-        </inertial>
-        <visual name='pod_visual'>
-          <pose>0 0 0 1.5707 -0 0</pose>
-          <material>
-            <script>
-              <uri>file://media/materials/scripts/gazebo.material</uri>
-              <name>Gazebo/Grey</name>
-            </script>
-          </material>
-          <geometry>
-            <mesh>
-              <uri>model://QR_POLE_1/mesh/QR_POLE_1.stl</uri>
-            </mesh>
-          </geometry>
-        </visual>
-        <collision name='pod_collision'>
-          <pose>0 0 0 1.5707 -0 0</pose>
-          <geometry>
-            <mesh>
-              <uri>model://QR_POLE_1/mesh/QR_POLE_1.stl</uri>
-            </mesh>
-          </geometry>
-          <surface>
-            <friction>
-              <ode>
-                <mu>0.8</mu>
-                <mu2>0.8</mu2>
-                <fdir1>0 0 0</fdir1>
-                <slip1>1</slip1>
-                <slip2>1</slip2>
-              </ode>
-              <torsional>
-                <ode/>
-              </torsional>
-            </friction>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-          </surface>
-          <max_contacts>10</max_contacts>
-        </collision>
-        <self_collide>0</self_collide>
-        <enable_wind>0</enable_wind>
-        <kinematic>0</kinematic>
-      </link>
-      <static>1</static>
-      <pose>1.99429 0.01237 0.003508 -1.56535 -0 0</pose>
-    </model>
-    <model name='QR_POLE_1_clone_0'>
-      <static>1</static>
-      <link name='pod_link'>
-        <inertial>
-          <pose>0 0 1.2045 0 -0 0</pose>
-          <mass>76.26</mass>
-          <inertia>
-            <ixx>47</ixx>
-            <ixy>-0.003456</ixy>
-            <ixz>0.001474</ixz>
-            <izz>13.075</izz>
-            <iyz>-0.014439</iyz>
-            <iyy>47</iyy>
-          </inertia>
-        </inertial>
-        <visual name='pod_visual'>
-          <pose>0 0 0 1.5707 -0 0</pose>
-          <material>
-            <script>
-              <uri>file://media/materials/scripts/gazebo.material</uri>
-              <name>Gazebo/Grey</name>
-            </script>
-          </material>
-          <geometry>
-            <mesh>
-              <uri>model://QR_POLE_1/mesh/QR_POLE_1.stl</uri>
-            </mesh>
-          </geometry>
-        </visual>
-        <collision name='pod_collision'>
-          <pose>0 0 0 1.5707 -0 0</pose>
-          <geometry>
-            <mesh>
-              <uri>model://QR_POLE_1/mesh/QR_POLE_1.stl</uri>
-            </mesh>
-          </geometry>
-          <surface>
-            <friction>
-              <ode>
-                <mu>0.8</mu>
-                <mu2>0.8</mu2>
-                <fdir1>0 0 0</fdir1>
-                <slip1>1</slip1>
-                <slip2>1</slip2>
-              </ode>
-              <torsional>
-                <ode/>
-              </torsional>
-            </friction>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-          </surface>
-          <max_contacts>10</max_contacts>
-        </collision>
-        <self_collide>0</self_collide>
-        <enable_wind>0</enable_wind>
-        <kinematic>0</kinematic>
-      </link>
-      <static>1</static>
-      <pose>-0.00133 -2.04041 0.003508 -1.56535 -0 0</pose>
-    </model>
-    <state world_name='default'>
-      <sim_time>570 32000000</sim_time>
-      <real_time>308 228504463</real_time>
-      <wall_time>1697530932 848448885</wall_time>
-      <iterations>307521</iterations>
-      <model name='QR_POLE_1'>
-        <pose>0.405844 1.07095 0.00364 -1.56572 0.001977 -0.371426</pose>
-        <scale>1 1 1</scale>
-        <link name='pod_link'>
-          <pose>0.405844 1.07095 0.00364 -1.56572 0.001977 -0.371426</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 0 0 -0 0</acceleration>
-          <wrench>0 0 0 0 -0 0</wrench>
-        </link>
-      </model>
-      <model name='QR_POLE_1_clone'>
-        <pose>1.06643 0.005155 0.003465 -1.57075 0.005446 -1.56302</pose>
-        <scale>1 1 1</scale>
-        <link name='pod_link'>
-          <pose>1.06643 0.005155 0.003465 -1.57075 0.005446 -1.56302</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 0 0 -0 0</acceleration>
-          <wrench>0 0 0 0 -0 0</wrench>
-        </link>
-      </model>
-      <model name='QR_POLE_1_clone_0'>
-        <pose>0.732946 -0.953633 0.000581 -1.57506 0.003392 -2.46886</pose>
-        <scale>1 1 1</scale>
-        <link name='pod_link'>
-          <pose>0.732946 -0.953633 0.000581 -1.57506 0.003392 -2.46886</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 0 0 -0 0</acceleration>
-          <wrench>0 0 0 0 -0 0</wrench>
-        </link>
-      </model>
-      <model name='ground_plane'>
-        <pose>0 0 0 0 -0 0</pose>
-        <scale>1 1 1</scale>
-        <link name='link'>
-          <pose>0 0 0 0 -0 0</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 0 0 -0 0</acceleration>
-          <wrench>0 0 0 0 -0 0</wrench>
-        </link>
-      </model>
-      <model name='line_following'>
-        <pose>-0.024583 -0.009482 -7e-06 7.5e-05 -3.4e-05 -0.903983</pose>
-        <scale>1 1 1</scale>
-        <link name='link_4'>
-          <pose>-0.024582 -0.009481 -7e-06 7.5e-05 -3.4e-05 -0.903983</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 -9.8 0 -0 0</acceleration>
-          <wrench>0 0 -9.8 0 -0 0</wrench>
-        </link>
-      </model>
-      <model name='turtlebot3_waffle'>
-        <pose>0.000117 0.000336 -0.001007 -3e-06 0.003179 0.002113</pose>
-        <scale>1 1 1</scale>
-        <link name='base_footprint'>
-          <pose>0.000117 0.000336 -0.001007 -3e-06 0.003179 0.002113</pose>
-          <velocity>1e-06 1e-06 4.4e-05 -4.9e-05 -0.000211 9e-06</velocity>
-          <acceleration>0 0 0 0 -0 0</acceleration>
-          <wrench>0 0 0 0 -0 0</wrench>
-        </link>
-        <link name='wheel_left_link'>
-          <pose>-8.3e-05 0.144336 0.031992 -1.57001 -0.002221 0.002108</pose>
-          <velocity>-7e-06 2e-06 3.7e-05 -5.6e-05 -0.000223 8e-06</velocity>
-          <acceleration>-0 0 0 0 -0 0</acceleration>
-          <wrench>-0 0 0 0 -0 0</wrench>
-        </link>
-        <link name='wheel_right_link'>
-          <pose>0.000526 -0.143663 0.031993 -1.57001 0.016482 0.002123</pose>
-          <velocity>-5e-06 2e-06 5.1e-05 -5.6e-05 -0.000181 8e-06</velocity>
-          <acceleration>0 0 -0 -0 -0 -0</acceleration>
-          <wrench>0 0 -0 0 -0 0</wrench>
-        </link>
-      </model>
-      <light name='sun'>
-        <pose>0 0 10 0 -0 0</pose>
-      </light>
-    </state>
-    <gui fullscreen='0'>
-      <camera name='user_camera'>
-        <pose>-1.33567 0.43728 2.99419 0 0.969797 -0.12764</pose>
-        <view_controller>orbit</view_controller>
-        <projection_type>perspective</projection_type>
-      </camera>
-    </gui>
-    <model name='line_following'>
-      <link name='link_4'>
-        <inertial>
-          <mass>1</mass>
-          <inertia>
-            <ixx>0.166667</ixx>
-            <ixy>0</ixy>
-            <ixz>0</ixz>
-            <iyy>0.166667</iyy>
-            <iyz>0</iyz>
-            <izz>0.166667</izz>
-          </inertia>
-          <pose>0 0 0 0 -0 0</pose>
-        </inertial>
-        <pose>0 2e-06 0 0 -0 0</pose>
-        <self_collide>0</self_collide>
-        <enable_wind>0</enable_wind>
-        <kinematic>0</kinematic>
-        <gravity>1</gravity>
+      <link name='link'>
         <visual name='visual'>
-          <pose>0 0 0 0 -0 0</pose>
+          <cast_shadows>0</cast_shadows>
           <geometry>
-            <mesh>
-              <uri>model://line_following/mesh/lines.STL</uri>
-              <scale>1 1 1</scale>
-            </mesh>
+            <box>
+              <size>25.0052 26.2668 0.01</size>
+            </box>
           </geometry>
           <material>
-            <lighting>1</lighting>
             <script>
-              <uri>file://media/materials/scripts/gazebo.material</uri>
-              <name>Gazebo/Black</name>
+              <uri>model://QR1/materials</uri>
+              <name>QR1/Materials</name>
             </script>
-            <shader type='pixel'>
-              <normal_map>__default__</normal_map>
-            </shader>
-            <ambient>0 0 0 1</ambient>
-            <diffuse>0 0 0 1</diffuse>
-            <specular>0 0 0 1</specular>
-            <emissive>0 0 0 1</emissive>
           </material>
-          <transparency>0</transparency>
-          <cast_shadows>1</cast_shadows>
         </visual>
-        <collision name='collision'>
-          <laser_retro>0</laser_retro>
-          <max_contacts>10</max_contacts>
-          <pose>0 0 0 0 -0 0</pose>
-          <geometry>
-            <mesh>
-              <uri>model://line_following/mesh/lines.STL</uri>
-              <scale>1 1 1</scale>
-            </mesh>
-          </geometry>
-          <surface>
-            <friction>
-              <ode>
-                <mu>1</mu>
-                <mu2>1</mu2>
-                <fdir1>0 0 0</fdir1>
-                <slip1>0</slip1>
-                <slip2>0</slip2>
-              </ode>
-              <torsional>
-                <coefficient>1</coefficient>
-                <patch_radius>0</patch_radius>
-                <surface_radius>0</surface_radius>
-                <use_patch_radius>1</use_patch_radius>
-                <ode>
-                  <slip>0</slip>
-                </ode>
-              </torsional>
-            </friction>
-            <bounce>
-              <restitution_coefficient>0</restitution_coefficient>
-              <threshold>1e+06</threshold>
-            </bounce>
-            <contact>
-              <collide_without_contact>0</collide_without_contact>
-              <collide_without_contact_bitmask>1</collide_without_contact_bitmask>
-              <collide_bitmask>1</collide_bitmask>
-              <ode>
-                <soft_cfm>0</soft_cfm>
-                <soft_erp>0.2</soft_erp>
-                <kp>1e+13</kp>
-                <kd>1</kd>
-                <max_vel>0.01</max_vel>
-                <min_depth>0</min_depth>
-              </ode>
-              <bullet>
-                <split_impulse>1</split_impulse>
-                <split_impulse_penetration_threshold>-0.01</split_impulse_penetration_threshold>
-                <soft_cfm>0</soft_cfm>
-                <soft_erp>0.2</soft_erp>
-                <kp>1e+13</kp>
-                <kd>1</kd>
-              </bullet>
-            </contact>
-          </surface>
-        </collision>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
       </link>
-      <static>0</static>
-      <allow_auto_disable>1</allow_auto_disable>
-      <pose>0.450552 -0.00715 0 0 -0 0</pose>
+      <pose>0.109028 0.760188 0 0 -0 0</pose>
+    </model>
+    <model name='QR2'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <box>
+              <size>28.1666 25.1794 0.01</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://QR2/materials/</uri>
+              <name>QR2/Materials</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>1.07966 0.012147 0 0 -0 0</pose>
+    </model>
+    <model name='QR3'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <box>
+              <size>23.0055 20.616 0.01</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://QR3/materials/</uri>
+              <name>QR3/Materials</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>0.746297 -0.967368 0 0 -0 0</pose>
+    </model>
+    <model name='line'>
+      <static>1</static>
+      <link name='link'>
+        <visual name='visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <box>
+              <size>0.648767 0.444065 0.0001</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://line/materials/</uri>
+              <name>line/Materials</name>
+            </script>
+          </material>
+        </visual>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+      </link>
+      <pose>0.220299 0.058304 0 0 -0 0</pose>
     </model>
   </world>
 </sdf>
