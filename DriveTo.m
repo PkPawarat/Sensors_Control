@@ -7,7 +7,7 @@ function DriveTo(target_x , target_y)
     rosshutdown;
 
     turningSpeed = 0.2;
-    drivingSpeed = 0.4;
+    drivingSpeed = 0.1;
     
     % Initialize ROS node in MATLAB
     rosinit;

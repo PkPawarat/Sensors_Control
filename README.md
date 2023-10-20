@@ -39,3 +39,13 @@ First, check the location of the RPlidar serial port, use the command
     export ROS_MASTER_URI=http://172.19.114.96:11311
     
     export ROS_HOSTNAME=172.19.114.96
+
+
+
+## Open simulation
+
+    roslaunch turtlebot3_gazebo test_world.launch
+
+    roslaunch turtlebot3_gazebo turtlebot3_gazebo_rviz.launch
+
+    roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch
