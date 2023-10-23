@@ -90,14 +90,14 @@ disp(msg);
 %%
 close all
 clf
-I = imread('testRight.png');
+I = imread('test3.png');
 I = rgb2gray(I);
 % imshow(I)
 a = size(I);
-crop = imcrop(I, [0 a(1,1)/2  a(1,2) a(1,1)]);
+crop = imcrop(I, [0 a(1,1)*3/4  a(1,2) a(1,1)]);
 imshow(crop)
 cornerPoints = detectHarrisFeatures(crop, "MinQuality", 0.2);
-BW = edge(crop, 'Canny');
+BW = edge(crop);
 [y, x] = find(BW);
 highestx = 0;
 highesty = 0;
@@ -142,9 +142,9 @@ robotcentrey = b(1,1)/2;
 plot(robotcentrex, robotcentrey, 'd')
 
 if (robotcentrex - centrex) < 0
-    move = 'turn left'
-elseif (robotcentrex - centrex) > 0
     move = 'turn right'
+elseif (robotcentrex - centrex) > 0
+    move = 'turn left'
 else
     move = 'straight'
 end

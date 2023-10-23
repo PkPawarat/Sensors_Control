@@ -224,7 +224,7 @@ classdef TurtlebotFollowStraightLine < handle
             [msg2,status,statustext] = receive(camera_rgb_,10);
             grey_image = rgb2gray(msg2);
             image_size = size(grey_image)
-            cropped_image = imcrop(I, [0 image_size(1,1)/2  image_size(1,2) image_size(1,1)]);
+            cropped_image = imcrop(I, [0 image_size(1,1)*3/4  image_size(1,2) image_size(1,1)]);
             edges = edge(cropped_image, 'Canny');
             [y_points, x_points] = find(edges);
 
@@ -266,9 +266,9 @@ classdef TurtlebotFollowStraightLine < handle
             robot_centre_y = cropped_image_size(1,1)/2;
             
             if (robot_centre_x - line_centre_x) < 0
-                move = 'turn left'
-            elseif (robotcentrex - centrex) > 0
                 move = 'turn right'
+            elseif (robotcentrex - centrex) > 0
+                move = 'turn left'
             else
                 move = 'straight'
             end 
