@@ -166,3 +166,4 @@ end
 % matchedPoints2 = validPoints2(indexPairs(:,2));
 % 
 % showMatchedFeatures(I1gs,I2gs,matchedPoints1,matchedPoints2,'montage');
+
