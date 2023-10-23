@@ -87,4 +87,83 @@ hold on;
 imshow(img);
 disp(msg);
 
-%test git branch
+%%
+close all
+clf
+I = imread('test3.png');
+I = rgb2gray(I);
+% imshow(I)
+a = size(I);
+crop = imcrop(I, [0 a(1,1)*3/4  a(1,2) a(1,1)]);
+imshow(crop)
+cornerPoints = detectHarrisFeatures(crop, "MinQuality", 0.2);
+BW = edge(crop);
+[y, x] = find(BW);
+highestx = 0;
+highesty = 0;
+for i = 1:size(x)
+    if x(i) > highestx
+        highestx = x(i);
+    end
+end
+
+for i = 1:size(y)
+    if y(i) > highesty
+        highesty = y(i);
+    end
+end
+lowestx = highestx;
+lowesty = highesty;
+for i = 1:size(x)
+    if x(i) < lowestx
+        lowestx = x(i);
+    end
+end
+for i = 1:size(y)
+    if y(i) < lowesty
+        lowesty = y(i);
+    end
+end
+
+centrex = (lowestx+highestx)/2;
+centrey = (lowesty+highesty)/2;
+
+imshow (crop)
+hold on;
+% plot (cornerPoints);
+imshow(BW)
+plot(centrex, centrey, 'd')
+
+b = size(crop);
+
+robotcentrex = b(1,2)/2;
+robotcentrey = b(1,1)/2;
+
+plot(robotcentrex, robotcentrey, 'd')
+
+if (robotcentrex - centrex) < 0
+    move = 'turn right'
+elseif (robotcentrex - centrex) > 0
+    move = 'turn left'
+else
+    move = 'straight'
+end
+
+
+% Q2
+% I1gs = rgb2gray (imread('roofs1.jpg'));
+% I2gs = rgb2gray (imread('roofs2.jpg'));
+% 
+% points1 = detectORBFeatures(I1gs);
+% points2 = detectORBFeatures(I2gs);
+% 
+% [features1, validPoints1] = extractFeatures(I1gs,points1);
+% [features2, validPoints2] = extractFeatures(I2gs,points2);
+% 
+% indexPairs = matchFeatures(features1,features2);
+% 
+% matchedPoints1 = validPoints1(indexPairs(:,1));
+% matchedPoints2 = validPoints2(indexPairs(:,2));
+% 
+% showMatchedFeatures(I1gs,I2gs,matchedPoints1,matchedPoints2,'montage');
+

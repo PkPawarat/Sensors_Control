@@ -158,8 +158,10 @@ classdef TurtlebotFollowStraightLine < handle
             pose.Pose.Pose.Orientation.X, pose.Pose.Pose.Orientation.Y, ...
             pose.Pose.Pose.Orientation.Z]);
         
+
         % Extract the current yaw angle
         CurrentRotation = currentOrientation(1);
+
         
         % Calculate the target angle for rotation
         targetAngle = CurrentRotation + deg2rad(rotateAngle); % Convert degrees to radians
@@ -420,7 +422,56 @@ classdef TurtlebotFollowStraightLine < handle
             disp("QR Code not found, turning X amount and trying again");
             [msg2,status,statustext] = receive(camera_rgb_,10);
             grey_image = rgb2gray(msg2);
-            % find the normal logic   
+            image_size = size(grey_image)
+            cropped_image = imcrop(I, [0 image_size(1,1)*3/4  image_size(1,2) image_size(1,1)]);
+            edges = edge(cropped_image, 'Canny');
+            [y_points, x_points] = find(edges);
+
+            largest_x_point = 0;
+            largest_y_point = 0;
+            
+            for i = 1:size(x_points)
+                if x_points(i) > largest_x_point
+                    largest_x_point = x_points(i);
+                end
+            end
+            
+            for i = 1:size(y_points)
+                if y_points(i) > largest_y_point
+                    largest_y_point = y_points(i);
+                end
+            end
+
+            lowest_x_point = highest_x_point;
+            lowest_y_point = highest_y_point;
+
+            for i = 1:size(x_points)
+                if x_points(i) < lowest_x_point
+                    lowest_x_point = x_points(i);
+                end
+            end
+            for i = 1:size(y_points)
+                if y_points(i) < lowest_y_point
+                    lowest_y_point = y_points(i);
+                end
+            end
+
+            line_centre_x = (lowest_x_point+largest_x_point)/2;
+            line_centre_y = (lowest_y_point+largest_y_point)/2;
+            
+            cropped_image_size = size(cropped_image);
+
+            robot_centre_x = cropped_image_size(1,2)/2;
+            robot_centre_y = cropped_image_size(1,1)/2;
+            
+            if (robot_centre_x - line_centre_x) < 0
+                move = 'turn right'
+            elseif (robotcentrex - centrex) > 0
+                move = 'turn left'
+            else
+                move = 'straight'
+            end 
+              
         end
 
         % Send a command to increase or decrease velocity and angular
@@ -444,7 +495,7 @@ classdef TurtlebotFollowStraightLine < handle
         end
         
         % Stop the robot movement 
-        function StopRobot(self)
+        function StopRobot(self) automatically merge. Don’t worry, 
             % Create a Twist message for the desired velocity command
             cmd_msg = rosmessage(self.pub_vel);
             % Stop the TurtleBot by sending a zero angular velocity command
