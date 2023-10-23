@@ -40,7 +40,7 @@ classdef TurtlebotFollowStraightLine < handle
 
     ipAddress = '127.0.0.1'%'192.168.0.101'
 
-    Advance = false;
+    Advance = true;
 
     end
 
@@ -67,10 +67,11 @@ classdef TurtlebotFollowStraightLine < handle
             threadHold = 0.1;
             pose = receive(self.odom_);
             
-            if ~Advance
+            if ~self.Advance
                 for i = 1:size(self.QRCodeOrder, 2)
                     self.ScanForQR(self);
                     disp("QR Code found.");
+                    disp(self.QRCodeOrder{i});
                     [isObstacle, distance, obstacle_location] = self.detectFrontObstacle(self);
                     disp("Rotating robot towards QR");
                     self.DriveTo(self, obstacle_location(1),obstacle_location(2), 0.4)
@@ -85,19 +86,21 @@ classdef TurtlebotFollowStraightLine < handle
                 for i = 1:size(self.QRCodeOrder, 2)
                     self.ScanForQR(self);
                     disp("QR Code found.");
+                    disp(self.QRCodeOrder{i});
                     [isObstacle, distance, obstacle_location] = self.detectFrontObstacle(self);
                     disp("Drive robot to QR code location with advance mode");
                     self.DriveTo_Complex(self, obstacle_location(1),obstacle_location(2), 0.4)
-                    disp("reach QR code location with advance mode");
-                    disp("Rotate robot back to home position");
-                    self.RotateRobot(self, 90);
-                    disp("Drive robot back to home position");
+                    % disp("reach QR code location with advance mode");
+                    % disp("Rotate robot back to home position");
+                    self.RotateRobot(self, 180);
+                    % disp("Drive robot back to home position");
                     self.DriveTo_Complex(self, pose.Pose.Pose.Position.X, pose.Pose.Pose.Position.Y, 0.05);
-                    disp("Rotate robot back to start position");
-                    self.RotateRobot(self, 90);
+                    % disp("Rotate robot back to start position");
+                    self.RotateRobot(self, 180);
                 end
             end
-            DriveTo_Complex(self, target_x , target_y, distanceTolerance)
+            disp("ALL DONE BABY~~~")
+            %DriveTo_Complex(self, target_x , target_y, distanceTolerance)
         end
     end
 
@@ -176,9 +179,9 @@ classdef TurtlebotFollowStraightLine < handle
             % Calculate the updated angle difference
             diff = abs(targetAngle - CurrentRotation);
             if diff > pi * 2
-                diff = diff - pi * 2
+                diff = diff - pi * 2;
             end
-            disp(diff);
+            % disp(diff);
             
             % Pause briefly to control the loop rate
             send(self.pub_vel, cmd_msg);
@@ -203,23 +206,23 @@ classdef TurtlebotFollowStraightLine < handle
             %Get the current pose of the robot
             pose = receive(self.odom_);
          
-            current_x = pose.Pose.Pose.Position.X
-            current_y = pose.Pose.Pose.Position.Y
+            current_x = pose.Pose.Pose.Position.X;
+            current_y = pose.Pose.Pose.Position.Y;
          
-            delta_x = target_x - current_x
-            delta_y = target_y - current_y
+            delta_x = target_x - current_x;
+            delta_y = target_y - current_y;
          
-            targetYaw = atan2(delta_y, delta_x)
+            targetYaw = atan2(delta_y, delta_x);
          
             currentOrientation = quat2eul([pose.Pose.Pose.Orientation.W, ...
                 pose.Pose.Pose.Orientation.X, pose.Pose.Pose.Orientation.Y, ...
                 pose.Pose.Pose.Orientation.Z]);
          
             % Extract the current yaw angle
-            CurrentRotation = currentOrientation(1)
+            CurrentRotation = currentOrientation(1);
          
-            delta_yaw = targetYaw - CurrentRotation
-            delta_yaw_deg = rad2deg(delta_yaw)
+            delta_yaw = targetYaw - CurrentRotation;
+            delta_yaw_deg = rad2deg(delta_yaw);
          
             % Set the angular velocity to make the TurtleBot rotate
             cmd_msg.Angular.Z = turningSpeed; % Adjust the value as needed
@@ -246,7 +249,7 @@ classdef TurtlebotFollowStraightLine < handle
                 if delta_yaw_deg > pi * 2
                     delta_yaw_deg = delta_yaw_deg - pi * 2;
                 end
-                disp(delta_yaw_deg);
+                % disp(delta_yaw_deg);
                  
                 % Pause briefly to control the loop rate
                 send(self.pub_vel, cmd_msg);
@@ -259,7 +262,7 @@ classdef TurtlebotFollowStraightLine < handle
             %Now that we are facing the correct direction, start the drive
             %but consider slippage in the rotation
          
-            distance = sqrt(delta_x * delta_x + delta_y * delta_y)
+            distance = sqrt(delta_x * delta_x + delta_y * delta_y);
          
             % distanceTolerance = 0.3;
             while distance > distanceTolerance
@@ -279,7 +282,7 @@ classdef TurtlebotFollowStraightLine < handle
                 delta_x = target_x - current_x;
                 delta_y = target_y - current_y;
          
-                distance = sqrt(delta_x * delta_x + delta_y * delta_y)
+                distance = sqrt(delta_x * delta_x + delta_y * delta_y);
          
                 % Calculate the updated angle difference
                 delta_yaw = targetYaw - CurrentRotation;
@@ -287,7 +290,7 @@ classdef TurtlebotFollowStraightLine < handle
                     delta_yaw = delta_yaw - pi * 2;
                 end
          
-                delta_yaw_deg = rad2deg(delta_yaw)
+                delta_yaw_deg = rad2deg(delta_yaw);
                 % Set the angular velocity to make the TurtleBot rotate
          
                 if abs(delta_yaw_deg) > angleTolerance
@@ -310,7 +313,7 @@ classdef TurtlebotFollowStraightLine < handle
          end
     
         function DriveTo_Complex(self, target_x , target_y, distanceTolerance)
-            turningSpeed = 0.4;
+            turningSpeed = 0.2;
             drivingSpeed = 0.1;
             angleTolerance = 0.005;
             MaxAngle = 0.5;
@@ -330,23 +333,23 @@ classdef TurtlebotFollowStraightLine < handle
             %Get the current pose of the robot
             pose = receive(pose_sub);
         
-            current_x = pose.Pose.Pose.Position.X
-            current_y = pose.Pose.Pose.Position.Y
+            current_x = pose.Pose.Pose.Position.X;
+            current_y = pose.Pose.Pose.Position.Y;
         
-            delta_x = target_x - current_x
-            delta_y = target_y - current_y
+            delta_x = target_x - current_x;
+            delta_y = target_y - current_y;
         
-            targetYaw = atan2(delta_y, delta_x)
+            targetYaw = atan2(delta_y, delta_x);
         
             currentOrientation = quat2eul([pose.Pose.Pose.Orientation.W, ...
                 pose.Pose.Pose.Orientation.X, pose.Pose.Pose.Orientation.Y, ...
                 pose.Pose.Pose.Orientation.Z]);
         
             % Extract the current yaw angle
-            CurrentRotation = currentOrientation(1)
+            CurrentRotation = currentOrientation(1);
         
-            delta_yaw = targetYaw - CurrentRotation
-            delta_yaw_deg = rad2deg(delta_yaw)
+            delta_yaw = targetYaw - CurrentRotation;
+            delta_yaw_deg = rad2deg(delta_yaw);
         
             % Set the angular velocity to make the TurtleBot rotate
             cmd_msg.Angular.Z = turningSpeed; % Adjust the value as needed
@@ -359,7 +362,7 @@ classdef TurtlebotFollowStraightLine < handle
             %Now that we are facing the correct direction, start the drive
             %but consider slippage in the rotation
         
-            distance = sqrt(delta_x * delta_x + delta_y * delta_y)
+            distance = sqrt(delta_x * delta_x + delta_y * delta_y);
         
             
             while distance > distanceTolerance
@@ -380,7 +383,7 @@ classdef TurtlebotFollowStraightLine < handle
                 delta_x = target_x - current_x;
                 delta_y = target_y - current_y;
         
-                distance = sqrt(delta_x * delta_x + delta_y * delta_y)
+                distance = sqrt(delta_x * delta_x + delta_y * delta_y);
         
                 % Calculate the updated angle difference
                 delta_yaw = targetYaw - CurrentRotation;
@@ -388,7 +391,7 @@ classdef TurtlebotFollowStraightLine < handle
                     delta_yaw = delta_yaw - pi * 2;
                 end
         
-                delta_yaw_deg = rad2deg(delta_yaw)
+                delta_yaw_deg = rad2deg(delta_yaw);
                 % Set the angular velocity to make the TurtleBot rotate
         
                 if abs(delta_yaw_deg) > angleTolerance
