@@ -40,6 +40,7 @@ classdef TurtlebotFollowStraightLine < handle
 
     ipAddress = '127.0.0.1'%'192.168.0.101'
 
+    %% Set advance to true for complex trajectory 
     Advance = true;
 
     end
@@ -64,43 +65,42 @@ classdef TurtlebotFollowStraightLine < handle
             self.lidar_ = rossubscriber('/scan','DataFormat','struct');
             self.camera_rgb_ = rossubscriber('/camera/rgb/image_raw', 'sensor_msgs/Image');
             
-            threadHold = 0.1;
             pose = receive(self.odom_);
             
+            [isObstacle, distances, obstacle_locations] = self.detectAllObstacles(self);
+
             if ~self.Advance
                 for i = 1:size(self.QRCodeOrder, 2)
+                    disp("Start find QR code.");
                     self.ScanForQR(self);
                     disp("QR Code found.");
                     disp(self.QRCodeOrder{i});
                     [isObstacle, distance, obstacle_location] = self.detectFrontObstacle(self);
                     disp("Rotating robot towards QR");
+                    disp(obstacle_location(1))
+                    disp(obstacle_location(2))
                     self.DriveTo(self, obstacle_location(1),obstacle_location(2), 0.4)
                     disp("Rotate robot back to home position");
-                    self.RotateRobot(self, 180);
+                    self.RotateRobot(self, 170);
                     disp("Drive robot back to home position");
                     self.DriveTo(self, pose.Pose.Pose.Position.X, pose.Pose.Pose.Position.Y, 0.05);
                     disp("Rotate robot back to start position");
-                    self.RotateRobot(self, 180);
+                    self.RotateRobot(self, 170);
                 end
             else
-                for i = 1:size(self.QRCodeOrder, 2)
-                    self.ScanForQR(self);
-                    disp("QR Code found.");
-                    disp(self.QRCodeOrder{i});
-                    [isObstacle, distance, obstacle_location] = self.detectFrontObstacle(self);
+                for i = 1:size(self.QRCodeOrder, 2)-1
                     disp("Drive robot to QR code location with advance mode");
-                    self.DriveTo_Complex(self, obstacle_location(1),obstacle_location(2), 0.4)
-                    % disp("reach QR code location with advance mode");
-                    % disp("Rotate robot back to home position");
-                    self.RotateRobot(self, 180);
-                    % disp("Drive robot back to home position");
-                    self.DriveTo_Complex(self, pose.Pose.Pose.Position.X, pose.Pose.Pose.Position.Y, 0.05);
-                    % disp("Rotate robot back to start position");
-                    self.RotateRobot(self, 180);
+                    disp('//')
+                    disp(obstacle_locations(i,1))
+                    disp(obstacle_locations(i,2))
+                    disp('//')
+                    self.DriveTo_Complex(self, obstacle_locations(i,1),obstacle_locations(i,2), 0.4)
+                    disp("Rotate robot back");
+                    self.RotateRobot(self, 170);
                 end
+                self.DriveTo_Complex(self, pose.Pose.Pose.Position.X, pose.Pose.Pose.Position.Y, 0.2);
             end
-            disp("ALL DONE BABY~~~")
-            %DriveTo_Complex(self, target_x , target_y, distanceTolerance)
+            disp("ALL DONE ~_~");
         end
     end
 
@@ -198,44 +198,44 @@ classdef TurtlebotFollowStraightLine < handle
         % Drive the robot to target x and y location base on /odom with
         % distance tolerance
         function DriveTo(self, target_x , target_y, distanceTolerance)
-            turningSpeed = 0.2;
+            turningSpeed = 0.1;
             drivingSpeed = 0.1;
             
             % Create a Twist message for the desired velocity command
             cmd_msg = rosmessage(self.pub_vel);
             send(self.pub_vel, cmd_msg);
-         
+            
             %Get the current pose of the robot
             pose = receive(self.odom_);
-         
+            
             current_x = pose.Pose.Pose.Position.X;
             current_y = pose.Pose.Pose.Position.Y;
-         
+            
             delta_x = target_x - current_x;
             delta_y = target_y - current_y;
-         
+            
             targetYaw = atan2(delta_y, delta_x);
-         
+            
             currentOrientation = quat2eul([pose.Pose.Pose.Orientation.W, ...
                 pose.Pose.Pose.Orientation.X, pose.Pose.Pose.Orientation.Y, ...
                 pose.Pose.Pose.Orientation.Z]);
-         
+            
             % Extract the current yaw angle
             CurrentRotation = currentOrientation(1);
-         
+            
             delta_yaw = targetYaw - CurrentRotation;
             delta_yaw_deg = rad2deg(delta_yaw);
-         
+            
             % Set the angular velocity to make the TurtleBot rotate
             cmd_msg.Angular.Z = turningSpeed; % Adjust the value as needed
             if delta_yaw_deg < 0
                 % If rotation is negative, swap direction
                 cmd_msg.Angular.Z = -cmd_msg.Angular.Z;
-             end
-         
+                end
+            
             % Publish the command to start the rotation
             send(self.pub_vel, cmd_msg);
-         
+            
             angleTolerance = 0.05;
             % Keep rotating until the angle difference is within tolerance
             while abs(delta_yaw_deg) > angleTolerance
@@ -245,32 +245,32 @@ classdef TurtlebotFollowStraightLine < handle
                     pose.Pose.Pose.Orientation.X, pose.Pose.Pose.Orientation.Y, ...
                     pose.Pose.Pose.Orientation.Z]);
                 CurrentRotation = currentOrientation(1); % Extract the yaw angle
-                 
+                    
                 % Calculate the updated angle difference
                 delta_yaw_deg = targetYaw - CurrentRotation;
                 if delta_yaw_deg > pi * 2
                     delta_yaw_deg = delta_yaw_deg - pi * 2;
                 end
                 % disp(delta_yaw_deg);
-                 
+                    
                 % Pause briefly to control the loop rate
                 send(self.pub_vel, cmd_msg);
-                pause(0.02);
-             end
-         
+                % pause(0.02);
+                end
+            
             cmd_msg.Angular.Z = 0;
             send(self.pub_vel, cmd_msg);
-         
+            
             %Now that we are facing the correct direction, start the drive
             %but consider slippage in the rotation
-         
+            
             distance = sqrt(delta_x * delta_x + delta_y * delta_y);
-         
+            countcheckLine = 0;
             % distanceTolerance = 0.3;
             while distance > distanceTolerance
                 cmd_msg.Angular.Z = 0; %reset angular to start
                 cmd_msg.Linear.X = drivingSpeed;
-         
+            
                 % Get the current orientation from the pose subscriber
                 pose = receive(self.odom_);
                 currentOrientation = quat2eul([pose.Pose.Pose.Orientation.W, ...
@@ -280,21 +280,21 @@ classdef TurtlebotFollowStraightLine < handle
 
                 current_x = pose.Pose.Pose.Position.X;
                 current_y = pose.Pose.Pose.Position.Y;
-             
+                
                 delta_x = target_x - current_x;
                 delta_y = target_y - current_y;
-         
+            
                 distance = sqrt(delta_x * delta_x + delta_y * delta_y);
-         
+            
                 % Calculate the updated angle difference
                 delta_yaw = targetYaw - CurrentRotation;
                 if delta_yaw > pi * 2
                     delta_yaw = delta_yaw - pi * 2;
                 end
-         
+            
                 delta_yaw_deg = rad2deg(delta_yaw);
                 % Set the angular velocity to make the TurtleBot rotate
-         
+            
                 if abs(delta_yaw_deg) > angleTolerance
                     % If rotation is negative, swap direction
                     cmd_msg.Angular.Z = turningSpeed;
@@ -302,22 +302,27 @@ classdef TurtlebotFollowStraightLine < handle
                         cmd_msg.Angular.Z = -cmd_msg.Angular.Z;
                     end
                 end
-         
+            
                 send(self.pub_vel, cmd_msg);
                 % Pause briefly to control the loop rate
-                pause(0.02);
-             end
-         
+                % pause(0.02);
+                if countcheckLine == 30
+                    self.CalculateNormal(self);
+                    countcheckLine = 0;
+                end
+                countcheckLine = countcheckLine+1;
+            end
+            
             %stop the robot by sending linear velocity command
             cmd_msg.Linear.X = 0;
             cmd_msg.Angular.Z = 0;
             send(self.pub_vel, cmd_msg);
-         end
+        end
     
         function DriveTo_Complex(self, target_x , target_y, distanceTolerance)
-            turningSpeed = 0.2;
+            turningSpeed = 0.4;
             drivingSpeed = 0.1;
-            angleTolerance = 0.005;
+            angleTolerance = 0.05;
             MaxAngle = 0.5;
             distanceTolerance = distanceTolerance;
             
@@ -406,6 +411,9 @@ classdef TurtlebotFollowStraightLine < handle
         
                 send(cmd_vel_pub, cmd_msg);
                 % Pause briefly to control the loop rate
+
+                % self.CalculateNormal(self);
+
                 pause(0.02);
             end
         
@@ -418,13 +426,14 @@ classdef TurtlebotFollowStraightLine < handle
 
         %Store all necessary values as properties within the class rather than
         %trying to pass them in and out of functions
-        function CalculateNormal(self)
-            disp("QR Code not found, turning X amount and trying again");
-            [msg2,status,statustext] = receive(camera_rgb_,10);
+        function move = CalculateNormal(self)
+            % disp("QR Code not found, turning X amount and trying again");
+            [msg2,status,statustext] = receive(self.camera_rgb_,10);
+            msg2 = readImage(msg2);
             grey_image = rgb2gray(msg2);
-            image_size = size(grey_image)
-            cropped_image = imcrop(I, [0 image_size(1,1)*3/4  image_size(1,2) image_size(1,1)]);
-            edges = edge(cropped_image, 'Canny');
+            image_size = size(grey_image);
+            cropped_image = imcrop(grey_image, [0 image_size(1,1)*3/4  image_size(1,2) image_size(1,1)]);
+            edges = edge(cropped_image);
             [y_points, x_points] = find(edges);
 
             largest_x_point = 0;
@@ -442,8 +451,8 @@ classdef TurtlebotFollowStraightLine < handle
                 end
             end
 
-            lowest_x_point = highest_x_point;
-            lowest_y_point = highest_y_point;
+            lowest_x_point = largest_x_point;
+            lowest_y_point = largest_y_point;
 
             for i = 1:size(x_points)
                 if x_points(i) < lowest_x_point
@@ -464,13 +473,15 @@ classdef TurtlebotFollowStraightLine < handle
             robot_centre_x = cropped_image_size(1,2)/2;
             robot_centre_y = cropped_image_size(1,1)/2;
             
-            if (robot_centre_x - line_centre_x) < 0
-                move = 'turn right'
-            elseif (robotcentrex - centrex) > 0
-                move = 'turn left'
+            if (robot_centre_x - line_centre_x) < -100
+                move = 'turn right';
+            elseif (robot_centre_x - line_centre_x) > 100
+                move = 'turn left';
             else
-                move = 'straight'
+                move = 'straight';
             end 
+            % disp(robot_centre_x - line_centre_x)
+            disp(move)
               
         end
 
@@ -495,7 +506,7 @@ classdef TurtlebotFollowStraightLine < handle
         end
         
         % Stop the robot movement 
-        function StopRobot(self) automatically merge. Don’t worry, 
+        function StopRobot(self) %automatically merge. Don’t worry, 
             % Create a Twist message for the desired velocity command
             cmd_msg = rosmessage(self.pub_vel);
             % Stop the TurtleBot by sending a zero angular velocity command
@@ -606,7 +617,72 @@ classdef TurtlebotFollowStraightLine < handle
                 detect = true;
             end
         end
+
+        function [isObstacle, distances, grouped_obstacle_locations] = detectAllObstacles(self)
+            scan_msg = receive(self.lidar_, 10); % wait up to 10 seconds for data
+            % Retrieve the robot's current pose
+            pose_msg = receive(self.odom_, 10);
+            % Get the range and angle information
+            ranges = scan_msg.Ranges;
+            angle_increment = scan_msg.AngleIncrement;
+            angle_min = scan_msg.AngleMin;
+            
+            % Threshold distance to consider an obstacle
+            threshold_distance = 2;
+            
+            obstacle_indices = find(ranges < threshold_distance);
+            isObstacle = ~isempty(obstacle_indices); % Return true if any obstacle detected, otherwise false
         
+            distances = ranges(obstacle_indices);
+            obstacle_locations = [];
+            
+            robot_x = pose_msg.Pose.Pose.Position.X;
+            robot_y = pose_msg.Pose.Pose.Position.Y;
+            robot_orientation = quat2eul([pose_msg.Pose.Pose.Orientation.W, pose_msg.Pose.Pose.Orientation.X, pose_msg.Pose.Pose.Orientation.Y, pose_msg.Pose.Pose.Orientation.Z]);
+            yaw = robot_orientation(1);
+        
+            for i = 1:length(obstacle_indices)
+                idx = obstacle_indices(i);
+                distance = ranges(idx);
+                obstacle_angle = angle_min + (idx-1) * angle_increment;
+                
+                % Calculate obstacle's position in the robot's frame
+                x_local = distance * cos(obstacle_angle);
+                y_local = distance * sin(obstacle_angle);
+                % Convert the obstacle's location to the global frame
+                x_global = robot_x + x_local*cos(yaw) - y_local*sin(yaw);
+                y_global = robot_y + x_local*sin(yaw) + y_local*cos(yaw);
+                obstacle_locations = [obstacle_locations; x_global, y_global];
+            end
+        
+            % Grouping close locations
+            proximity_threshold = 0.2;
+            is_visited = zeros(size(obstacle_locations, 1), 1);
+            grouped_obstacle_locations = [];
+        
+            for i = 1:size(obstacle_locations, 1)
+                if ~is_visited(i)
+                    is_visited(i) = 1;
+                    current_point = obstacle_locations(i, :);
+                    nearby_points = current_point; % Start with the current point
+                    
+                    % Check for points close to the current one
+                    for j = 1:size(obstacle_locations, 1)
+                        if ~is_visited(j)
+                            distance = norm(obstacle_locations(j, :) - current_point);
+                            if distance < proximity_threshold
+                                is_visited(j) = 1;
+                                nearby_points = [nearby_points; obstacle_locations(j, :)];
+                            end
+                        end
+                    end
+                    
+                    % Average the nearby points to get a representative point
+                    avg_point = mean(nearby_points, 1);
+                    grouped_obstacle_locations = [grouped_obstacle_locations; avg_point];
+                end
+            end
+        end
 
 
     end
