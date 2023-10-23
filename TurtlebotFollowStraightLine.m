@@ -70,19 +70,34 @@ classdef TurtlebotFollowStraightLine < handle
             if ~Advance
                 for i = 1:size(self.QRCodeOrder, 2)
                     self.ScanForQR(self);
-                    disp("1. QR Code found.");
+                    disp("QR Code found.");
                     [isObstacle, distance, obstacle_location] = self.detectFrontObstacle(self);
-                    disp("5. Rotating robot towards QR");
+                    disp("Rotating robot towards QR");
                     self.DriveTo(self, obstacle_location(1),obstacle_location(2), 0.4)
-                    disp("6. Rotate robot back to home position");
+                    disp("Rotate robot back to home position");
                     self.RotateRobot(self, 180);
-                    disp("6. Drive robot back to home position");
+                    disp("Drive robot back to home position");
                     self.DriveTo(self, pose.Pose.Pose.Position.X, pose.Pose.Pose.Position.Y, 0.05);
-                    disp("6. Rotate robot back to start position");
+                    disp("Rotate robot back to start position");
                     self.RotateRobot(self, 180);
                 end
+            else
+                for i = 1:size(self.QRCodeOrder, 2)
+                    self.ScanForQR(self);
+                    disp("QR Code found.");
+                    [isObstacle, distance, obstacle_location] = self.detectFrontObstacle(self);
+                    disp("Drive robot to QR code location with advance mode");
+                    self.DriveTo_Complex(self, obstacle_location(1),obstacle_location(2), 0.4)
+                    disp("reach QR code location with advance mode");
+                    disp("Rotate robot back to home position");
+                    self.RotateRobot(self, 90);
+                    disp("Drive robot back to home position");
+                    self.DriveTo_Complex(self, pose.Pose.Pose.Position.X, pose.Pose.Pose.Position.Y, 0.05);
+                    disp("Rotate robot back to start position");
+                    self.RotateRobot(self, 90);
+                end
             end
-    
+            DriveTo_Complex(self, target_x , target_y, distanceTolerance)
         end
     end
 
@@ -116,65 +131,67 @@ classdef TurtlebotFollowStraightLine < handle
         
         %Rotate the robot 45 degrees counter-clockwise. 
         function RotateRobot(self, rotateAngle)
-            % Create a Twist message for the desired velocity command
-            cmd_msg = rosmessage(self.pub_vel);
-            
-            % Set the angular velocity to make the TurtleBot rotate
-            cmd_msg.Angular.Z = 0.4; % Adjust the value as needed
-            if rotateAngle < 0
-                % If rotation is negative, swap direction
-                cmd_msg.Angular.Z = -cmd_msg.Angular.Z;
-            end
+        % Create a Twist message for the desired velocity command
+        cmd_msg = rosmessage(self.pub_vel);
         
-            % Initialize the initial orientation
-            initialOrientation = 0;
-            % Publish the command to start the rotation
-            send(self.pub_vel, cmd_msg);
-            
-            % Define angle tolerance for stopping the rotation
-            angleTolerance = 0.05; % Adjust the tolerance as needed
-            
-            % Get the current pose of the TurtleBot
+        % Set the angular velocity to make the TurtleBot rotate
+        cmd_msg.Angular.Z = 0.4; % Adjust the value as needed
+        if rotateAngle < 0
+            % If rotation is negative, swap direction
+            cmd_msg.Angular.Z = -cmd_msg.Angular.Z;
+        end
+        
+        % Initialize the initial orientation
+        initialOrientation = 0;
+        % Publish the command to start the rotation
+        send(self.pub_vel, cmd_msg);
+        
+        % Define angle tolerance for stopping the rotation
+        angleTolerance = 0.05; % Adjust the tolerance as needed
+        
+        % Get the current pose of the TurtleBot
+        pose = receive(self.odom_);
+        currentOrientation = quat2eul([pose.Pose.Pose.Orientation.W, ...
+            pose.Pose.Pose.Orientation.X, pose.Pose.Pose.Orientation.Y, ...
+            pose.Pose.Pose.Orientation.Z]);
+        
+        % Extract the current yaw angle
+        CurrentRotation = currentOrientation(1);
+        
+        % Calculate the target angle for rotation
+        targetAngle = CurrentRotation + deg2rad(rotateAngle); % Convert degrees to radians
+        
+        % Calculate the initial angle difference
+        diff = abs(targetAngle - CurrentRotation);
+        
+        % Keep rotating until the angle difference is within tolerance
+        while diff > angleTolerance
+            % Get the current orientation from the pose subscriber
             pose = receive(self.odom_);
             currentOrientation = quat2eul([pose.Pose.Pose.Orientation.W, ...
                 pose.Pose.Pose.Orientation.X, pose.Pose.Pose.Orientation.Y, ...
                 pose.Pose.Pose.Orientation.Z]);
+            CurrentRotation = currentOrientation(1); % Extract the yaw angle
             
-            % Extract the current yaw angle
-            CurrentRotation = currentOrientation(1);
-            
-            % Calculate the target angle for rotation
-            targetAngle = CurrentRotation + deg2rad(rotateAngle); % Convert degrees to radians
-            
-            % Calculate the initial angle difference
+            % Calculate the updated angle difference
             diff = abs(targetAngle - CurrentRotation);
-            
-            % Keep rotating until the angle difference is within tolerance
-            while diff > angleTolerance
-                % Get the current orientation from the pose subscriber
-                pose = receive(self.odom_);
-                currentOrientation = quat2eul([pose.Pose.Pose.Orientation.W, ...
-                    pose.Pose.Pose.Orientation.X, pose.Pose.Pose.Orientation.Y, ...
-                    pose.Pose.Pose.Orientation.Z]);
-                CurrentRotation = currentOrientation(1); % Extract the yaw angle
-                
-                % Calculate the updated angle difference
-                diff = abs(targetAngle - CurrentRotation);
-                if diff > pi * 2
-                    diff = diff - pi * 2
-                end
-                disp(diff);
-                
-                % Pause briefly to control the loop rate
-                send(self.pub_vel, cmd_msg);
-                pause(0.02);
+            if diff > pi * 2
+                diff = diff - pi * 2
             end
+            disp(diff);
             
-            % Stop the TurtleBot by sending a zero angular velocity command
-            cmd_msg.Angular.Z = 0;
+            % Pause briefly to control the loop rate
             send(self.pub_vel, cmd_msg);
-         end
-
+            pause(0.02);
+        end
+        
+        % Stop the TurtleBot by sending a zero angular velocity command
+        cmd_msg.Angular.Z = 0;
+        send(self.pub_vel, cmd_msg);
+        end
+        
+        % Drive the robot to target x and y location base on /odom with
+        % distance tolerance
         function DriveTo(self, target_x , target_y, distanceTolerance)
             turningSpeed = 0.2;
             drivingSpeed = 0.1;
@@ -292,6 +309,108 @@ classdef TurtlebotFollowStraightLine < handle
             send(self.pub_vel, cmd_msg);
          end
     
+        function DriveTo_Complex(self, target_x , target_y, distanceTolerance)
+            turningSpeed = 0.4;
+            drivingSpeed = 0.1;
+            angleTolerance = 0.005;
+            MaxAngle = 0.5;
+            distanceTolerance = distanceTolerance;
+            
+            % Create a publisher for sending velocity commands
+            cmd_vel_pub = self.pub_vel;
+            
+            % Create a subscriber for the robot's current pose (for orientation feedback)
+            pose_sub = self.odom_;
+            
+            % Create a Twist message for the desired velocity command
+            cmd_msg = rosmessage(cmd_vel_pub);
+        
+            send(cmd_vel_pub, cmd_msg);
+        
+            %Get the current pose of the robot
+            pose = receive(pose_sub);
+        
+            current_x = pose.Pose.Pose.Position.X
+            current_y = pose.Pose.Pose.Position.Y
+        
+            delta_x = target_x - current_x
+            delta_y = target_y - current_y
+        
+            targetYaw = atan2(delta_y, delta_x)
+        
+            currentOrientation = quat2eul([pose.Pose.Pose.Orientation.W, ...
+                pose.Pose.Pose.Orientation.X, pose.Pose.Pose.Orientation.Y, ...
+                pose.Pose.Pose.Orientation.Z]);
+        
+            % Extract the current yaw angle
+            CurrentRotation = currentOrientation(1)
+        
+            delta_yaw = targetYaw - CurrentRotation
+            delta_yaw_deg = rad2deg(delta_yaw)
+        
+            % Set the angular velocity to make the TurtleBot rotate
+            cmd_msg.Angular.Z = turningSpeed; % Adjust the value as needed
+            if delta_yaw_deg < 0
+                % If rotation is negative, swap direction
+                cmd_msg.Angular.Z = -cmd_msg.Angular.Z;
+            end
+        
+        
+            %Now that we are facing the correct direction, start the drive
+            %but consider slippage in the rotation
+        
+            distance = sqrt(delta_x * delta_x + delta_y * delta_y)
+        
+            
+            while distance > distanceTolerance
+                cmd_msg.Angular.Z = 0; %reset angular to start
+                cmd_msg.Linear.X = drivingSpeed;
+        
+                % Get the current orientation from the pose subscriber
+                pose = receive(pose_sub);
+                currentOrientation = quat2eul([pose.Pose.Pose.Orientation.W, ...
+                    pose.Pose.Pose.Orientation.X, pose.Pose.Pose.Orientation.Y, ...
+                    pose.Pose.Pose.Orientation.Z]);
+                CurrentRotation = currentOrientation(1); % Extract the yaw angle
+        
+        
+                current_x = pose.Pose.Pose.Position.X;
+                current_y = pose.Pose.Pose.Position.Y;
+            
+                delta_x = target_x - current_x;
+                delta_y = target_y - current_y;
+        
+                distance = sqrt(delta_x * delta_x + delta_y * delta_y)
+        
+                % Calculate the updated angle difference
+                delta_yaw = targetYaw - CurrentRotation;
+                if delta_yaw > pi * 2
+                    delta_yaw = delta_yaw - pi * 2;
+                end
+        
+                delta_yaw_deg = rad2deg(delta_yaw)
+                % Set the angular velocity to make the TurtleBot rotate
+        
+                if abs(delta_yaw_deg) > angleTolerance
+                    % If rotation is negative, swap direction
+                    cmd_msg.Angular.Z = turningSpeed;
+                    if delta_yaw_deg < 0
+                        cmd_msg.Angular.Z = -cmd_msg.Angular.Z;
+                    end
+                end
+        
+                send(cmd_vel_pub, cmd_msg);
+                % Pause briefly to control the loop rate
+                pause(0.02);
+            end
+        
+            %stop the robot by sending linear velocity command
+            cmd_msg.Linear.X = 0;
+            cmd_msg.Angular.Z = 0;
+            send(cmd_vel_pub, cmd_msg);
+            
+        end
+
         %Store all necessary values as properties within the class rather than
         %trying to pass them in and out of functions
         function CalculateNormal(self)
@@ -301,6 +420,7 @@ classdef TurtlebotFollowStraightLine < handle
             % find the normal logic   
         end
 
+        % Send a command to increase or decrease velocity and angular
         function sendBotVel(linear_x, linear_y, angular_x, angular_y)
             bot_vel = rosmessage('geometry_msgs/Twist');
             bot_vel.twist.twist.linear.x = linear_x;
@@ -309,7 +429,8 @@ classdef TurtlebotFollowStraightLine < handle
             bot_vel.twist.twist.angular.y = angular_y;
             send(pub_vel,bot_vel);
         end
-
+        
+        % Move the robot back a little bit
         function MoveBack(self, linear_x)
             bot_vel = rosmessage('geometry_msgs/Twist');
             bot_vel.Linear.X = linear_x;
@@ -319,6 +440,7 @@ classdef TurtlebotFollowStraightLine < handle
             end
         end
         
+        % Stop the robot movement 
         function StopRobot(self)
             % Create a Twist message for the desired velocity command
             cmd_msg = rosmessage(self.pub_vel);
@@ -327,6 +449,8 @@ classdef TurtlebotFollowStraightLine < handle
             send(self.pub_vel, cmd_msg);
         end
 
+        % detect obstacle in front of the robot both vertical and
+        % horizontal
         function [isObstacle, distance, obstacle_location] = detectFrontObstacle(self)
             scan_msg = receive(self.lidar_, 10); % wait up to 10 seconds for data
             % Retrieve the robot's current pose
@@ -375,6 +499,7 @@ classdef TurtlebotFollowStraightLine < handle
             end
         end
 
+        % Detect Square object in front of robot
         function [zoomedROI,  detect] = detectSquare(self)
             % Detect Harris corner points
             I = rgb2gray(self.ImageSub);
@@ -428,6 +553,8 @@ classdef TurtlebotFollowStraightLine < handle
             end
         end
         
+
+
     end
 
 end
