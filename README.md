@@ -3,10 +3,14 @@ Subject 41014 Sensors and Control for Mechatronics Systems
 
 
 ## Matlab
- a
     matlab
 
-
+## Project Description
+This project aimed to develop the control system for a Turtlebot robot to autonomously follow a straight line, in addition to a complex trajectory, based on a image reading of a square. 
+This was utilized by obtaining readings from an RGB-D sensor placed on the robot. 
+This sensor can observe the corners of a square placed in front of the robot which prompts the Turtlebot to navigate towards a predefined target location by determining where the straight line on the floor would be. 
+The main objective was to take sensor readings, filter out noise and control the robot to travel in a straight line. This project also involved creating two complex trajectories. 
+This project was completed using the simulated Turtlebot. 
 
 
 ## ros 
