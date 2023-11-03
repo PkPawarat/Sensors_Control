@@ -1,6 +1,7 @@
-function [zoomedROI,  detect]= detectSquare(img)
+% Detect Square object in front of robot
+function [zoomedROI,  detect] = detectSquare(ImageSub)
     % Detect Harris corner points
-    I = rgb2gray(img);
+    I = rgb2gray(ImageSub);
     cornerPoints1 = detectHarrisFeatures(I);
     locations = cornerPoints1.Location;
 
