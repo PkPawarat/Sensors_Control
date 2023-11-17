@@ -1,7 +1,8 @@
 # Sensors_Control
 Subject 41014 Sensors and Control for Mechatronics Systems 
 
-
+## Check out our demonstration 
+- [Video](https://youtu.be/3MIpA-Jp_GI)
 ## Matlab
     matlab
 
